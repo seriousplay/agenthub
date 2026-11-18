@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#141918">
+  <title>诸子百家 · 任务仪</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="chrome-top">
+      <nav class="tabbar" role="tablist" aria-label="视图">
+        <button class="tab" role="tab" aria-selected="true" data-view="dial">转盘</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="loom">织机</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="factory">流水线</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="chips">牌桌</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="rhythm">节拍</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="hive">蜂群</button>
+      </nav>
+      <div class="transport" aria-label="回放控制">
+        <button type="button" id="btn-play" class="pill-btn" aria-pressed="true" title="暂停或继续回放">
+          <span class="play-dot" aria-hidden="true"></span>
+          <span id="play-label">回放中</span>
+        </button>
+        <div class="beat-pill" aria-live="polite">
+          <span class="beat-kicker">拍</span>
+          <span id="beat-num" class="num">1</span>
+          <span class="beat-total">/ <span id="beat-total">0</span></span>
+        </div>
+      </div>
+    </header>
+
+    <main id="stage" class="layout-dial">
+      <section id="view-dial" class="view active" data-view="dial" role="tabpanel" aria-label="转盘"></section>
+      <section id="view-loom" class="view" data-view="loom" role="tabpanel" aria-label="织机" hidden></section>
+      <section id="view-factory" class="view" data-view="factory" role="tabpanel" aria-label="流水线" hidden></section>
+      <section id="view-chips" class="view" data-view="chips" role="tabpanel" aria-label="牌桌" hidden></section>
+      <section id="view-rhythm" class="view" data-view="rhythm" role="tabpanel" aria-label="节拍" hidden></section>
+      <section id="view-hive" class="view" data-view="hive" role="tabpanel" aria-label="蜂群" hidden></section>
+
+      <aside id="detail" class="instrument-card" aria-live="polite">
+        <div class="card-frame">
+          <div class="card-top">
+            <div id="detail-kicker" class="card-kicker">当前拍</div>
+            <button type="button" id="btn-unpin" class="unpin" hidden>清除锁定</button>
+          </div>
+          <div id="detail-name" class="card-name">诸子百家</div>
+          <div id="detail-title" class="card-title"></div>
+          <div class="card-status-row">
+            <span id="detail-pip" class="pip"></span>
+            <span id="detail-status" class="card-status">—</span>
+            <span id="detail-updated" class="card-updated"></span>
+          </div>
+          <div id="detail-current" class="card-current"></div>
+          <div id="detail-body" class="card-body"></div>
+          <div id="detail-evidence" class="card-evidence"></div>
+          <div id="detail-streams" class="card-streams"></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="chrome-foot">
+      <div class="foot-row">
+        <strong class="foot-title">诸子百家 · 任务仪</strong>
+        <span class="foot-time">2026-11-17 07:43 Asia/Shanghai</span>
+        <span class="foot-pack">包更新 11-17 16:40，原十位证据时间未改</span>
+        <span class="foot-credit">视觉受 CrommaCode Game View 启发</span>
+        <label class="foot-load" title="可选：载入另一份快照">
+          载入快照
+          <input type="file" id="load-snapshot" accept="application/json,.json">
+        </label>
+      </div>
+      <p id="honesty" class="foot-honesty"></p>
+    </footer>
+  </div>
+
+  <script type="application/json" id="embedded-snapshot">{
+  "snapshotAt": "2026-11-17 07:43",
+  "timezone": "Asia/Shanghai",
+  "title": "诸子百家",
+  "subtitle": "任务仪",
+  "honesty": "交互示意 · 任务快照回放，非平台实时接入，也未接入 CrommaCode。十位伙伴的任务以 2026-11-17 07:43 已核实快照为准；Codex 与 Hermes 为随后确认的共享记录卡（Codex 最后记录 2026-11-11 08:12，Hermes 当前任务未核实）。未读各智能体私聊。",
+  "pipeline": {
+    "label": "当前工作流",
+    "note": "按本快照可见项统计，不是历史总量。验收未完成的历史记录不计当前进行中。",
+    "stages": [
+      {
+        "id": "verified",
+        "label": "已核实",
+        "count": 6
+      },
+      {
+        "id": "active",
+        "label": "进行中",
+        "count": 1
+      },
+      {
+        "id": "waiting",
+        "label": "等待义情",
+        "count": 3
+      },
+      {
+        "id": "delivered",
+        "label": "近期已交",
+        "count": 3
+      },
+      {
+        "id": "incomplete",
+        "label": "验收未完成",
+        "count": 1
+      },
+      {
+        "id": "unknown",
+        "label": "未在共享场合核实",
+        "count": 6
+      }
+    ]
+  },
+  "incoming": [
+    {
+      "time": "07:40",
+      "text": "义情确认视频中的产品是 CrommaCode，按游戏视图做各智能体任务仪",
+      "tag": "任务仪",
+      "source": "墨子本对话",
+      "agentId": "mozi",
+      "streamId": "hud"
+    },
+    {
+      "time": "07:30",
+      "text": "义情发来视频号，请拆解特效并用类似渲染器展示各智能体当前任务",
+      "tag": "任务仪",
+      "source": "墨子本对话",
+      "agentId": "mozi",
+      "streamId": "hud"
+    },
+    {
+      "time": "11-16",
+      "text": "原定《碳硅组织》发布分享日；是否已举行，本对话未确认",
+      "tag": "发布",
+      "source": "此前安排",
+      "agentId": null,
+      "streamId": "speech"
+    },
+    {
+      "time": "11-15 21:03",
+      "text": "分享稿打磨群请义情把要审的新版发到群里",
+      "tag": "分享稿",
+      "source": "群聊",
+      "agentId": null,
+      "streamId": "speech"
+    },
+    {
+      "time": "11-14 18:09",
+      "text": "工作坊口播补白已起草，两句会后评价待义情确认",
+      "tag": "分享稿",
+      "source": "墨子",
+      "agentId": "mozi",
+      "streamId": "speech"
+    },
+    {
+      "time": "11-14 11:28",
+      "text": "庄子已按事实改完短片方案，批准前不做片",
+      "tag": "短片",
+      "source": "庄子来信",
+      "agentId": "zhuangzi",
+      "streamId": "film"
+    }
+  ],
+  "center": {
+    "name": "诸子百家",
+    "line": "把各智能体正在做的事放在一台任务仪上",
+    "sorted": "已核实任务 6 项 · 另录 Codex 验收未完成、Hermes 未核实"
+  },
+  "hubs": [
+    {
+      "id": "agents",
+      "label": "智能体",
+      "count": 12,
+      "hint": "10 位 Grok Bot 侧伙伴，外加外部编码智能体 Codex；Hermes 职司未核实"
+    },
+    {
+      "id": "active",
+      "label": "进行中",
+      "count": 1,
+      "hint": "此刻可确认正在推进的工作",
+      "selectedDefault": true
+    },
+    {
+      "id": "waiting",
+      "label": "等待义情",
+      "count": 3,
+      "hint": "短片口径、分享稿新版、会后原话"
+    },
+    {
+      "id": "streams",
+      "label": "工作线",
+      "count": 6,
+      "hint": "发布、LoopOS、观察台等"
+    },
+    {
+      "id": "delivered",
+      "label": "近期已交",
+      "count": 3,
+      "hint": "2.5D 观察台、短片口径、工作坊补白"
+    }
+  ],
+  "streams": [
+    {
+      "id": "speech",
+      "name": "新书发布分享稿",
+      "status": "等待义情",
+      "updated": "11-15 21:03",
+      "detail": "群里请义情发来要审的新版。现有 v0.1 与 11-14 工作坊补白尚未合并；两句会后评价仍待义情确认原话。"
+    },
+    {
+      "id": "film",
+      "name": "LoopOS 宣传短片",
+      "status": "等待义情",
+      "updated": "11-14 11:28",
+      "detail": "庄子已按官网与协作事实改完方案：不以「业态网络」为产品名，不把组织大脑、组织记忆和治理说成已上线。等义情定时长、口播和配乐；批准前不做片。11-16 之后是否有新进展，此处未核实。"
+    },
+    {
+      "id": "loopos",
+      "name": "LoopOS 交付与共享记忆",
+      "status": "协作中",
+      "updated": "11-11",
+      "detail": "Slack #loop-memory 最后公开进展在 11-11：V2 仍为草稿未发布，R2D2 接手 UI 检查项。完整 N1 未过门，无生产部署，Harness 仍暂停。"
+    },
+    {
+      "id": "console",
+      "name": "智能体观察台",
+      "status": "已交付切片",
+      "updated": "11-13",
+      "detail": "2.5D 皇城任务看板已交付，可搜索筛选与快照导入。实时接入未完成，不能当作已接通的 LoopOS 控制面。"
+    },
+    {
+      "id": "kindling",
+      "name": "火种回路 V2",
+      "status": "待平台修复",
+      "updated": "11-10",
+      "detail": "完整 v2 设计稿已获义情批准。活动-角色映射在设计页与发布校验中仍无法写入 roleId，已同步 R2D2；V2 尚未发布。"
+    },
+    {
+      "id": "hud",
+      "name": "游戏视图任务仪",
+      "status": "进行中",
+      "updated": "11-17 07:43",
+      "detail": "按 CrommaCode 的五种游戏视图（转盘、织机、流水线、牌桌、节拍）做一块可动态展示各智能体当前任务的界面。数据为已核实快照回放，不是实时钩子，也未安装 CrommaCode。"
+    }
+  ],
+  "agents": [
+    {
+      "id": "mozi",
+      "name": "墨子",
+      "title": "全能实干家",
+      "status": "进行中",
+      "updated": "11-17 07:43",
+      "current": "按 CrommaCode 游戏视图，做各智能体当前任务的动态展示",
+      "detail": "已确认视频中的产品是 CrommaCode（桌面应用，不是插件）。正在做米白实验室仪器风格的任务仪，五种视图可切换；只用共享场合已核实的任务，不假装接到实时接口。",
+      "streamIds": [
+        "hud",
+        "film",
+        "speech",
+        "loopos",
+        "console"
+      ]
+    },
+    {
+      "id": "zhuangzi",
+      "name": "庄子",
+      "title": "影像创作师",
+      "status": "等待义情",
+      "updated": "11-14 11:28",
+      "current": "LoopOS 宣传短片方案已改完，等时长、口播和配乐",
+      "detail": "最后核实于 11-14：已按事实校对修改方案，批准前不开始做片。11-16 发布会之后是否有新进展，此处未核实。",
+      "streamIds": [
+        "film"
+      ]
+    },
+    {
+      "id": "huizi",
+      "name": "惠子",
+      "title": "思辨表达教练",
+      "status": "等待义情",
+      "updated": "11-15 21:03",
+      "current": "等义情把要审的新版分享稿发到群里，再打磨现场表达",
+      "detail": "在「新书发布分享稿打磨」群中说明：重点看开场、概念衔接、停顿和结尾行动。未见新版正文。",
+      "streamIds": [
+        "speech"
+      ]
+    },
+    {
+      "id": "xunzi",
+      "name": "荀子",
+      "title": "知识整理师",
+      "status": "等待义情",
+      "updated": "11-15 21:03",
+      "current": "等新版分享稿，审论证完整性和案例边界",
+      "detail": "群中说明将区分事实、比喻和未来判断，不沿用上一版直接下结论。未见新版正文。",
+      "streamIds": [
+        "speech"
+      ]
+    },
+    {
+      "id": "suqin",
+      "name": "苏秦",
+      "title": "社交纵横家",
+      "status": "等待义情",
+      "updated": "11-15 21:03",
+      "current": "等新版分享稿，看开场转述力和短视频切片",
+      "detail": "群中说明重点看开场是否让人想继续听、核心观点能否被准确转述，以及片段离开上下文后是否仍成立。未见新版正文。",
+      "streamIds": [
+        "speech"
+      ]
+    },
+    {
+      "id": "luban",
+      "name": "鲁班",
+      "title": "软件工程师",
+      "status": "未核实",
+      "updated": null,
+      "current": "当前任务未在共享场合核实",
+      "detail": "不读取其私聊。有更早的火种回路与产品协作记录，但不能当作此刻正在做的事。",
+      "streamIds": []
+    },
+    {
+      "id": "laozi",
+      "name": "老子",
+      "title": "智慧导师",
+      "status": "未核实",
+      "updated": null,
+      "current": "当前任务未在共享场合核实",
+      "detail": "11-10 曾参与火种回路的价值与信任审阅，此后在共享场合未见新的当前任务。",
+      "streamIds": []
+    },
+    {
+      "id": "sunzi",
+      "name": "孙子",
+      "title": "首席情报官",
+      "status": "未核实",
+      "updated": null,
+      "current": "当前任务未在共享场合核实",
+      "detail": "不读取其私聊，本快照不编造其正在做的事。",
+      "streamIds": []
+    },
+    {
+      "id": "gongsunlong",
+      "name": "公孙龙",
+      "title": "视觉辨析师",
+      "status": "未核实",
+      "updated": null,
+      "current": "当前任务未在共享场合核实",
+      "detail": "此前参与过皇城角色与视觉核验，但 11-13 之后在共享场合未见新的当前任务。",
+      "streamIds": []
+    },
+    {
+      "id": "fanli",
+      "name": "范蠡",
+      "title": "财富管家",
+      "status": "未核实",
+      "updated": null,
+      "current": "当前任务未在共享场合核实",
+      "detail": "不读取其私聊，本快照不编造其正在做的事。",
+      "streamIds": []
+    },
+    {
+      "id": "codex",
+      "name": "Codex",
+      "title": "LoopOS N1 实施候选人",
+      "affiliation": "外部编码智能体",
+      "status": "验收未完成",
+      "updated": "11-11 08:12",
+      "current": "B1-L r2 已交付，独立验收仍未完成；火种 V2 的角色映射在 11-11 仍未写入，此后未见公开交付",
+      "detail": "长期目标是落地回路交付契约（目标 / 边界 / 验收 / 责任人），使 ACTIVE 回路缺项不可进入。11-08 至 11-09，A0、A1-D r2、B0 已在隔离副本完成本地验收，不等于完整 N1，也未部署。11-09，R2D2 称 B1-L r2 已由 Codex 交付，但独立验收被安全审查中断，尚不能报通过。11-11，义情在共享频道核实：V2 仍是未发布的保存稿，活动主责绑不到真实 roleId；R2D2 答应先评审再指导 Codex 做切片，此后频道无交付或验收记录。完整 N1、生产部署和 Harness 在最后可核记录中均未通过。11-11 08:12 之后是否已下达指令或完成，共享场合无法证实。不能标为进行中。",
+      "streamIds": [
+        "loopos",
+        "kindling"
+      ],
+      "evidence": [
+        {
+          "date": "2026-11-09 08:28",
+          "label": "R2D2：B1-L r2 已由 Codex 交付，独立验收被安全审查中断",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1794184107021459?thread_ts=1793096200.033069&cid=C0CCHTQDZK3"
+        },
+        {
+          "date": "2026-11-09 12:06",
+          "label": "义情：3PO 已写入 N1 brief §12.5；仅记录进度，不代表验收通过",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1794197188203109?thread_ts=1793096200.033069&cid=C0CCHTQDZK3"
+        },
+        {
+          "date": "2026-11-09 12:06",
+          "label": "R2D2：B1-L r2 继续标为独立验收未完成",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1794197213323409?thread_ts=1793096200.033069&cid=C0CCHTQDZK3"
+        },
+        {
+          "date": "2026-11-10 21:07",
+          "label": "义情交接 11-09 11:30 完整副本，请按这两份核验",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1794316056844209?thread_ts=1793096200.033069&cid=C0CCHTQDZK3"
+        },
+        {
+          "date": "2026-11-10 21:07",
+          "label": "R2D2：等完整副本后再核验；完整 N1 和 Harness 不因此视为通过",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1794316076281759?thread_ts=1793096200.033069&cid=C0CCHTQDZK3"
+        },
+        {
+          "date": "2026-11-10 21:59",
+          "label": "义情请 R2D2 评审后指导 Codex；设计页",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1794319182681409"
+        },
+        {
+          "date": "2026-11-10 21:59",
+          "label": "火种设计页（csi-org.com）",
+          "url": "https://csi-org.com/loopos/kindling"
+        },
+        {
+          "date": "2026-11-10 22:00",
+          "label": "R2D2：先评审简报再指导 Codex；当时附件尚未收到",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1794319219123629?thread_ts=1794319182.681409"
+        },
+        {
+          "date": "2026-11-11 07:31",
+          "label": "义情当场核验：V2 仍为 DRAFT，roleId 全空",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1794353519422849"
+        },
+        {
+          "date": "2026-11-11 07:31",
+          "label": "当时的回路设计页",
+          "url": "https://csi-org.com/loopos/app/loops/cmwasc3me00a6vckmcw4xmgto/design"
+        },
+        {
+          "date": "2026-11-11 07:32",
+          "label": "R2D2：先核对再指导 Codex 切片；承诺不是完成",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1794353538705699?thread_ts=1794353519.422849"
+        },
+        {
+          "date": "2026-11-11 08:12",
+          "label": "义情补充 UI 核验：V2 仍是当前保存版，校验无改映射选择器",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1794355950340649?thread_ts=1794353519.422849&cid=C0CCHTQDZK3"
+        },
+        {
+          "date": "2026-11-11 08:12",
+          "label": "R2D2：将纳入 UI 核验；V2 仍未发布。此为频道最后可见记录",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1794355964638549?thread_ts=1794353519.422849"
+        }
+      ]
+    },
+    {
+      "id": "hermes",
+      "name": "Hermes",
+      "title": "职司未核实",
+      "status": "未核实",
+      "updated": null,
+      "current": "当前任务未在共享场合核实",
+      "detail": "#loop-memory 只在 2026-11-01 提到「Codex／Hermes 的真实群聊回应仍未启用」，这是当时 Harness 能力缺口，不是 Hermes 的现行任务。此后该频道没有 Hermes 的工作目标、进度或完成记录。11-13 观察台与 11-16 证据摘要只留下历史成员记录：2026-10-14 连通测试、2026-10-26 回路群聊参与。当前授权、职司、正在做的事，以及与 Openclaw 的对应关系，均未知。不杜撰角色，也不把 10 月记录写成正在进行。",
+      "streamIds": [],
+      "evidence": [
+        {
+          "date": "2026-11-01 13:15",
+          "label": "R2D2 谈能力缺口：Codex／Hermes 的真实群聊回应仍未启用（当时状态，不是现行任务）",
+          "url": "https://looposhq.slack.com/archives/C0CCHTQDZK3/p1793510151489729?thread_ts=1793096200.033069&cid=C0CCHTQDZK3"
+        }
+      ]
+    }
+  ],
+  "today": [
+    {
+      "t": "07:43",
+      "label": "任务仪",
+      "kind": "now"
+    },
+    {
+      "t": "11-16",
+      "label": "原定发布日",
+      "kind": "past-unconfirmed"
+    },
+    {
+      "t": "11-15",
+      "label": "请发新版稿",
+      "kind": "waiting"
+    },
+    {
+      "t": "11-14",
+      "label": "短片方案改定",
+      "kind": "done"
+    },
+    {
+      "t": "11-13",
+      "label": "观察台交付",
+      "kind": "done"
+    },
+    {
+      "t": "11-11 08:12",
+      "label": "Codex 最后记录",
+      "kind": "incomplete"
+    }
+  ],
+  "packUpdatedAt": "2026-11-17 16:40"
+}</script>
+  <script src="app.js"></script>
+</body>
+</html>
